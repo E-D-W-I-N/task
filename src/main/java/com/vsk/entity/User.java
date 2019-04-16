@@ -3,8 +3,7 @@ package com.vsk.entity;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import java.util.Set;
 
 @Entity
 @Table
@@ -14,13 +13,19 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	@NotBlank(message = "Username cannot be null")
 	private String username;
-	@Email(message = "Email should be valid")
 	private String email;
-	@NotBlank(message = "Phone cannot be null")
 	private String phone;
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+	private Set<Event> eventSet;
+
 	public User() {
+	}
+
+	public User(String username, String email, String phone) {
+		this.username = username;
+		this.email = email;
+		this.phone = phone;
 	}
 }

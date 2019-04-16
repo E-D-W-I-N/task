@@ -1,7 +1,9 @@
 package com.vsk.service;
 
+import com.vsk.dto.UserDto;
 import com.vsk.entity.User;
 import com.vsk.repository.UserRepository;
+import com.vsk.util.ObjectMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,17 +20,12 @@ public class UserService {
 	}
 
 	public Long addUser(String username, String email, String phone) {
-		User user = new User();
-		user.setUsername(username);
-		user.setEmail(email);
-		user.setPhone(phone);
-
+		User user = new User(username, email, phone);
 		userRepository.save(user);
-
 		return user.getId();
 	}
 
-	public List<User> findAllUsers(){
-		return userRepository.findAll();
+	public List<UserDto> findAllUsers() {
+		return ObjectMapperUtils.mapAll(userRepository.findAll(), UserDto.class);
 	}
 }

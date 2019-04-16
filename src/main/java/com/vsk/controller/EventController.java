@@ -1,11 +1,17 @@
 package com.vsk.controller;
 
-import com.vsk.entity.Event;
+import com.vsk.dto.EventDto;
 import com.vsk.service.EventService;
+import com.vsk.util.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/event")
@@ -19,21 +25,25 @@ public class EventController {
 	}
 
 	@GetMapping("/all")
-	@ResponseBody
-	public List<Event> getEvents() {
-		return eventService.findAllEvents();
+	public ResponseEntity<List<EventDto>> getEvents() {
+		return new ResponseEntity(eventService.findAllEvents(), HttpStatus.OK);
 	}
 
 	@GetMapping
-	@ResponseBody
-	public List<Event> getEventByIdAndDate(@RequestBody Event event) {
-
-		return eventService.findEventsByUserIdAndDate(event.getUserId(), event.getDate());
+	public ResponseEntity<List<EventDto>> getEventByIdAndDate(@RequestBody EventDto eventDto) {
+		return new ResponseEntity(
+				eventService.findEventsByUserIdAndDate(eventDto.getUserId(), eventDto.getLocalDateTime()), HttpStatus.OK);
 	}
 
 	@PostMapping("/add")
-	@ResponseBody
-	public Long addEvent(@RequestBody Event event) {
-		return eventService.addEvent(event.getUserId(), event.getDate(), event.getType(), event.getDescription());
+	public ResponseEntity<String> addEvent(@RequestBody @Valid EventDto eventDto, BindingResult bindingResult) {
+
+		if (bindingResult.hasErrors()) {
+			Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
+			return new ResponseEntity(errorsMap, HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity(eventService.addEvent(eventDto.getUserId(), eventDto.getLocalDateTime(),
+				eventDto.getType(), eventDto.getDescription()), HttpStatus.OK);
 	}
 }
