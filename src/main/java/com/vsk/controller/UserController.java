@@ -3,15 +3,14 @@ package com.vsk.controller;
 import com.vsk.dto.UserDto;
 import com.vsk.entity.User;
 import com.vsk.service.UserService;
-import com.vsk.util.ControllerUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.Valid;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -26,18 +25,15 @@ public class UserController {
 
 	@GetMapping("/all")
 	public ResponseEntity<User> getUsers() {
-		return new ResponseEntity(userService.findAllUsers(), HttpStatus.OK);
+		List<UserDto> users = userService.findAllUsers();
+		if (users.isEmpty())
+			throw new EntityNotFoundException("There's no users");
+		else
+			return new ResponseEntity(userService.findAllUsers(), HttpStatus.OK);
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<String> addUser(@RequestBody @Valid UserDto userDto, BindingResult bindingResult) {
-
-		if (bindingResult.hasErrors()) {
-			Map<String, String> errorsMap = ControllerUtils.getErrors(bindingResult);
-			return new ResponseEntity(errorsMap, HttpStatus.BAD_REQUEST);
-		}
-
-		return new ResponseEntity(
-				userService.addUser(userDto.getUsername(), userDto.getEmail(), userDto.getPhone()), HttpStatus.OK);
+	public Long addUser(@Valid @RequestBody UserDto userDto) {
+		return userService.addUser(userDto.getUsername(), userDto.getEmail(), userDto.getPhone());
 	}
 }

@@ -1,6 +1,8 @@
 package com.vsk.entity;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -16,6 +18,8 @@ public class Event {
 
 	@ManyToOne
 	@JoinColumn
+	@EqualsAndHashCode.Exclude
+	@ToString.Exclude
 	private User user;
 	private LocalDateTime localDateTime;
 	private String type;
