@@ -8,7 +8,6 @@ import com.vsk.repository.UserRepository;
 import com.vsk.util.ObjectMapperUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -16,7 +15,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @Service
-@Validated
 public class EventService {
 
 	private final EventRepository eventRepository;
@@ -30,7 +28,7 @@ public class EventService {
 
 	public Long addEvent(Long userId, String dateTimeString, String type, String description) {
 		User userFromDb = userRepository.findById(userId).orElse(null);
-		if(userFromDb == null)
+		if (userFromDb == null)
 			throw new EntityNotFoundException("User not found");
 		else {
 			Event event = new Event(userFromDb, parseLocalDateTime(dateTimeString), type, description);
@@ -41,8 +39,7 @@ public class EventService {
 	}
 
 	private LocalDateTime parseLocalDateTime(String dateTimeString) throws DateTimeParseException {
-		LocalDateTime localDateTime = LocalDateTime.parse(dateTimeString.replace(" ", "T"));
-		return localDateTime;
+		return LocalDateTime.parse(dateTimeString.replace(" ", "T"));
 	}
 
 	public List<EventDto> findEventsByUserIdAndDate(Long userId, String dateTimeString) {

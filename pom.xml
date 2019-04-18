@@ -19,6 +19,9 @@
         <hibernate-validator.version>6.0.16.Final</hibernate-validator.version>
         <jackson-dataformat-xml>2.9.8</jackson-dataformat-xml>
         <modelmapper-spring.version>2.3.3</modelmapper-spring.version>
+        <junit.version>4.12</junit.version>
+        <mockito-core.version>2.27.0</mockito-core.version>
+        <javax.el.version>3.0.0</javax.el.version>
     </properties>
     <packaging>war</packaging>
 
@@ -74,6 +77,29 @@
             <artifactId>jackson-dataformat-xml</artifactId>
             <version>${jackson-dataformat-xml}</version>
         </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>${javax.el.version}</version>
+        </dependency>
+
 
 
         <!-- Tools -->

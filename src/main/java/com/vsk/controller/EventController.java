@@ -2,6 +2,8 @@ package com.vsk.controller;
 
 import com.vsk.dto.EventDto;
 import com.vsk.service.EventService;
+import org.hibernate.TypeMismatchException;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +11,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -49,9 +50,15 @@ public class EventController {
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<String> addEvent(@Valid @RequestBody EventDto eventDto) {
+	public ResponseEntity<String> addEvent(
+			@NotNull(message = "Please fill user's id") @RequestParam Long userId,
 
-		return new ResponseEntity(eventService.addEvent(eventDto.getUserId(), eventDto.getLocalDateTime(),
-				eventDto.getType(), eventDto.getDescription()), HttpStatus.OK);
+			@NotBlank(message = "Date and time can't be null") @RequestParam String localDateTime,
+			@NotBlank(message = "Event's type can't be null") @RequestParam String type,
+
+			@NotBlank(message = "Event's description can't be null")
+			@Length(max = 200, message = "Description too long") @RequestParam String description) throws TypeMismatchException {
+
+		return new ResponseEntity(eventService.addEvent(userId, localDateTime, type, description), HttpStatus.OK);
 	}
 }
